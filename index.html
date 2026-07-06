@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Meu Mercadinho</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f4f7f6;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 400px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 1.8em;
+        }
+
+        .value-display {
+            font-size: 1.3em;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            color: #34495e;
+        }
+
+        .value-display strong {
+            color: #2980b9;
+            font-size: 1.2em;
+        }
+
+        input[type="number"] {
+            font-size: 1.5em;
+            padding: 12px;
+            width: 70%;
+            margin-bottom: 20px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 80%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #219653;
+        }
+
+        .btn-novo {
+            background-color: #2980b9;
+            margin-top: 15px;
+        }
+
+        .btn-novo:hover {
+            background-color: #2471a3;
+        }
+
+        #feedback {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 30px;
+        }
+
+        .correct {
+            color: #27ae60;
+        }
+
+        .wrong {
+            color: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🛒 O Meu Mercadinho</h1>
+
+        <div class="value-display">
+            <p>O cliente comprou: <br><strong id="preco">€0.00</strong></p>
+            <p>O cliente pagou com: <br><strong id="pago">€0.00</strong></p>
+        </div>
+
+        <p style="font-size: 1.2em; font-weight: 500;">Qual é o troco?</p>
+        <input type="number" id="troco" step="0.01" placeholder="Ex: 2.50">
+        <br>
+
+        <button onclick="verificarTroco()">Dar o Troco</button>
+        <p id="feedback"></p>
+
+        <button class="btn-novo" onclick="gerarNovoDesafio()">Atender Próximo Cliente</button>
+    </div>
+
+    <script>
+        let valorPreco = 0;
+        let valorPago = 0;
+
+        function gerarNovoDesafio() {
+            // Gera um preço aleatório entre 1.00 e 15.00
+            valorPreco = (Math.random() * 14 + 1).toFixed(2);
+
+            // Define as notas disponíveis com as quais o cliente pode pagar
+            const notas = [5, 10, 20];
+
+            // Garante que a nota entregue é maior que o preço do produto
+            const notasValidas = notas.filter(nota => nota > parseFloat(valorPreco));
+            valorPago = notasValidas[Math.floor(Math.random() * notasValidas.length)];
+
+            // Atualiza o ecrã
+            document.getElementById('preco').innerText = `€${valorPreco}`;
+            document.getElementById('pago').innerText = `€${valorPago.toFixed(2)}`;
+            document.getElementById('troco').value = '';
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('troco').focus();
+        }
+
+        function verificarTroco() {
+            const inputTroco = document.getElementById('troco').value;
+            const feedback = document.getElementById('feedback');
+
+            if (!inputTroco) {
+                feedback.innerText = "Por favor, digita um valor.";
+                feedback.className = "wrong";
+                return;
+            }
+
+            const trocoSugerido = parseFloat(inputTroco);
+            const trocoReal = (valorPago - valorPreco).toFixed(2);
+
+            if (trocoSugerido === parseFloat(trocoReal)) {
+                feedback.innerText = "Excelente! O troco está certíssimo! 🎉";
+                feedback.className = "correct";
+            } else {
+                feedback.innerText = `Ops! Tenta de novo. (Dica: o troco correto é €${trocoReal})`;
+                feedback.className = "wrong";
+            }
+        }
+
+        // Inicia o primeiro desafio assim que a página carrega
+        window.onload = gerarNovoDesafio;
+    </script>
+</body>
+
+</html>
